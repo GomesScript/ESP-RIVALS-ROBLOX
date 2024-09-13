@@ -38,10 +38,11 @@ EspSection:CreateToggle("ESP", function(enabled)
     end
 end)
 
--- Área para Fly
-local FlySection = MainTab:CreateSection("Fly")
+-- Área para MISC (Power Jump, Speed Hack, Fly)
+local MiscSection = MainTab:CreateSection("MISC")
 
-FlySection:CreateToggle("Fly", function(enabled)
+-- Fly Toggle
+MiscSection:CreateToggle("Fly", function(enabled)
     if enabled then
         -- Add Fly functionality
         local player = game.Players.LocalPlayer
@@ -74,10 +75,8 @@ FlySection:CreateToggle("Fly", function(enabled)
     end
 end)
 
--- Área para Speed Hack
-local SpeedSection = MainTab:CreateSection("Speed Hack")
-
-SpeedSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
+-- Speed Hack Slider
+MiscSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
@@ -85,10 +84,8 @@ SpeedSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
     print("Speed:", value)
 end)
 
--- Área para Power Jump
-local PowerJumpSection = MainTab:CreateSection("Power Jump")
-
-PowerJumpSection:CreateToggle("Power Jump", function(enabled)
+-- Power Jump Toggle
+MiscSection:CreateToggle("Power Jump", function(enabled)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
