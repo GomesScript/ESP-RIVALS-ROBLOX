@@ -7,26 +7,18 @@ local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
 local EspSection = MainTab:CreateSection("ESP")
 
 -- Variável para armazenar o código do ESP
-local espScript
+local ESP = require(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))
 local espActive = false
 
 EspSection:CreateToggle("ESP", "info", function(state)
     if state then
-        if not espScript then
-            -- Carregar o script de ESP externo e armazenar o código
-            espScript = loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
-        end
-        
-        -- Executar o código do ESP, se disponível
-        if espScript then
-            espScript()
+        if not espActive then
+            ESP.Start()
             espActive = true
         end
     else
-        -- Desativar o ESP, se o script externo suporta essa ação
-        if espActive and espScript then
+        if espActive then
             -- Aqui você deve adicionar a lógica específica para desativar o ESP
-            -- Se o script de ESP não tem uma função de desligamento, você pode precisar de outro método
             print("Desativando ESP.")
             espActive = false
         end
