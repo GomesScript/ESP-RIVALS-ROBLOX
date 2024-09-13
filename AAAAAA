@@ -7,103 +7,64 @@ local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
 local EspSection = MainTab:CreateSection("ESP")
 
 -- Variáveis para controle do ESP
-local espModule
-local espActive = false
+local espEnabled = false
+local espBoxes = {}
 
--- Função para carregar o módulo ESP
-local function loadESP()
-    local response = game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346")
-    espModule = loadstring(response)()
+-- Função para criar caixas ESP
+local function createESPBox(player)
+    local character = player.Character
+    if not character then return end
+    
+    local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
+    if not humanoidRootPart then return end
+    
+    -- Criar uma caixa em torno do HumanoidRootPart
+    local box = Instance.new("BoxHandleAdornment")
+    box.Parent = humanoidRootPart
+    box.Adornee = humanoidRootPart
+    box.Size = Vector3.new(4, 6, 2) -- Ajuste o tamanho da caixa conforme necessário
+    box.Color3 = Color3.new(1, 0, 0) -- Cor da caixa (vermelho)
+    box.Thickness = 0.2
+    box.Transparency = 0.5
+    box.ZIndex = 5
+    
+    table.insert(espBoxes, box)
 end
 
--- Função para iniciar o ESP
-local function startESP()
-    if espModule and espModule.Start then
-        espModule.Start()
+-- Função para remover todas as caixas ESP
+local function removeESPBoxes()
+    for _, box in ipairs(espBoxes) do
+        if box then
+            box:Destroy()
+        end
+    end
+    espBoxes = {}
+end
+
+-- Função para atualizar caixas ESP
+local function updateESP()
+    if espEnabled then
+        -- Remover caixas existentes
+        removeESPBoxes()
+        
+        -- Adicionar caixas para todos os jogadores
+        for _, player in ipairs(game.Players:GetPlayers()) do
+            if player ~= game.Players.LocalPlayer and player.Character then
+                createESPBox(player)
+            end
+        end
+    else
+        -- Remover todas as caixas quando o ESP estiver desativado
+        removeESPBoxes()
     end
 end
-
--- Função para parar o ESP
-local function stopESP()
-    if espModule and espModule.Stop then
-        espModule.Stop()
-    end
-end
-
--- Inicialize o módulo ESP (mas não o execute ainda)
-loadESP()
 
 -- Configuração da caixa de seleção para o ESP
 EspSection:CreateToggle("ESP", "info", function(state)
-    if state then
-        -- Ativar o ESP
-        if not espActive then
-            startESP()
-            espActive = true
-        end
-    else
-        -- Desativar o ESP
-        if espActive then
-            stopESP()
-            espActive = false
-        end
-    end
+    espEnabled = state
+    updateESP()
 end)
 
--- Área para MISC (Power Jump, Speed Hack, Fly)
-local MiscSection = MainTab:CreateSection("MISC")
-
--- Fly Toggle
-MiscSection:CreateToggle("Fly", function(enabled)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    if enabled then
-        -- Add Fly functionality
-        local bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
-        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-        bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
-        
-        local bodyGyro = Instance.new("BodyGyro", humanoidRootPart)
-        bodyGyro.CFrame = humanoidRootPart.CFrame
-        bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
-        
-        game:GetService("RunService").RenderStepped:Connect(function()
-            if bodyVelocity and bodyGyro then
-                local direction = (game.Players.LocalPlayer:GetMouse().Hit.p - humanoidRootPart.Position).unit
-                bodyVelocity.Velocity = direction * 50
-                bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + direction)
-            end
-        end)
-    else
-        -- Remove Fly functionality
-        for _, v in pairs(humanoidRootPart:GetChildren()) do
-            if v:IsA("BodyVelocity") or v:IsA("BodyGyro") then
-                v:Destroy()
-            end
-        end
-    end
-end)
-
--- Speed Hack Slider
-MiscSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-    humanoid.WalkSpeed = value
-    print("Speed:", value)
-end)
-
--- Power Jump Toggle
-MiscSection:CreateToggle("Power Jump", function(enabled)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-    
-    if enabled then
-        humanoid.JumpPower = 100  -- Set desired jump power here
-    else
-        humanoid.JumpPower = 50  -- Default jump power
-    end
-end)
+-- Atualizar o ESP quando novos jogadores entrarem ou saírem
+game.Players.PlayerAdded:Connect(updateESP)
+game.Players.PlayerRemoving:Connect(updateESP)
