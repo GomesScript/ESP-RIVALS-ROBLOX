@@ -1,22 +1,40 @@
--- Script para ativar/desativar o ESP
+-- Criar e configurar o ScreenGui
+local player = game.Players.LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+screenGui.Parent = player.PlayerGui
 
--- Referências para GUI e Botão
-local screenGui = script.Parent.Parent
-local frame = script.Parent
-local toggleButton = frame:FindFirstChild("TextButton")
+-- Criar e configurar o Frame
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 200, 0, 100)
+frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)  -- Cor do fundo do Frame
+frame.Parent = screenGui
 
--- A variável para armazenar o estado do ESP
+-- Criar e configurar o TextButton
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(1, 0, 1, 0)
+toggleButton.Text = "Toggle ESP"
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)  -- Cor do texto
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 120, 255)  -- Cor do fundo do botão
+toggleButton.Parent = frame
+
+-- Variável para controlar o estado do ESP
 local espEnabled = false
 
--- Função para alternar o ESP
+-- Função para ativar/desativar o ESP
 local function toggleESP()
     espEnabled = not espEnabled
     if espEnabled then
-        -- Código para ativar o ESP
-        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
+        -- Ativar ESP
+        local espScript = loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
+        espScript()  -- Executa o script ESP
+
+        -- Se o script ESP requer desativação, você pode armazenar e chamar a função de desativação aqui
     else
-        -- Código para desativar o ESP
-        -- Talvez você precise adicionar um código para remover o ESP, dependendo do script
+        -- Desativar ESP
+        -- Aqui você deve adicionar a lógica para desativar o ESP se o script precisar
+        -- Exemplo fictício: (Você precisará modificar isso com base na implementação do seu ESP)
+        -- if espScript then espScript:Disable() end
     end
 end
 
