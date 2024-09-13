@@ -1,10 +1,9 @@
--- Certifique-se de ter a biblioteca RoStrap no seu projeto
-local RoStrap = require(game.ReplicatedStorage:WaitForChild("RoStrap"))
-local Players = game:GetService("Players")
-local UserInputService = game:GetService("UserInputService")
-local LocalPlayer = Players.LocalPlayer
-
 -- Criação do Menu GUI
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local UserInputService = game:GetService("UserInputService")
+
+-- Cria a GUI no PlayerGui
 local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MenuGUI"
 screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
@@ -13,6 +12,7 @@ local menuFrame = Instance.new("Frame")
 menuFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
 menuFrame.Position = UDim2.new(0.7, 0, 0.25, 0)
 menuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+menuFrame.Visible = false
 menuFrame.Parent = screenGui
 
 local title = Instance.new("TextLabel")
@@ -22,7 +22,7 @@ title.Text = "Menu Hacks"
 title.TextColor3 = Color3.fromRGB(255, 255, 255)
 title.Parent = menuFrame
 
--- Adicionar botões para cada funcionalidade
+-- Função para criar botões
 local function createButton(name, position, callback)
     local button = Instance.new("TextButton")
     button.Size = UDim2.new(1, 0, 0.1, 0)
@@ -31,39 +31,44 @@ local function createButton(name, position, callback)
     button.Text = name
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.Parent = menuFrame
-    
+
     button.MouseButton1Click:Connect(callback)
 end
 
--- Funções de funcionalidades
+-- Funções de funcionalidades (exemplos básicos)
 local function toggleFly()
-    -- Implementar a funcionalidade Fly aqui
+    print("Fly toggled")
+    -- Adicione a lógica para a funcionalidade Fly
 end
 
 local function toggleAimbot()
-    -- Implementar a funcionalidade Aimbot aqui
+    print("Aimbot toggled")
+    -- Adicione a lógica para a funcionalidade Aimbot
 end
 
 local function toggleESP()
-    -- Implementar a funcionalidade ESP aqui
+    print("ESP toggled")
+    -- Adicione a lógica para a funcionalidade ESP
 end
 
 local function toggleSpeedhack()
-    -- Implementar a funcionalidade Speedhack aqui
+    print("Speedhack toggled")
+    -- Adicione a lógica para a funcionalidade Speedhack
 end
 
 local function togglePowerjump()
-    -- Implementar a funcionalidade Powerjump aqui
+    print("Powerjump toggled")
+    -- Adicione a lógica para a funcionalidade Powerjump
 end
 
--- Adicionar botões ao menu
+-- Adiciona botões ao menu
 createButton("Fly", UDim2.new(0, 0, 0.2, 0), toggleFly)
 createButton("Aimbot", UDim2.new(0, 0, 0.35, 0), toggleAimbot)
 createButton("ESP", UDim2.new(0, 0, 0.5, 0), toggleESP)
 createButton("Speedhack", UDim2.new(0, 0, 0.65, 0), toggleSpeedhack)
 createButton("Powerjump", UDim2.new(0, 0, 0.8, 0), togglePowerjump)
 
--- Toggle Menu Visibility
+-- Alterna a visibilidade do menu com a tecla "M"
 UserInputService.InputBegan:Connect(function(input, gameProcessed)
     if input.KeyCode == Enum.KeyCode.M and not gameProcessed then
         menuFrame.Visible = not menuFrame.Visible
