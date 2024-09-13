@@ -89,7 +89,7 @@ local MiscSection = MainTab:CreateSection("MISC")
 
 -- Fly Toggle
 local flyEnabled = false
-MiscSection:CreateToggle("Fly", function(enabled)
+MiscSection:CreateToggle("Fly", "Ativar/desativar voo", function(enabled)
     flyEnabled = enabled
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
@@ -132,7 +132,7 @@ MiscSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
 end)
 
 -- Power Jump Toggle
-MiscSection:CreateToggle("Power Jump", function(enabled)
+MiscSection:CreateToggle("Power Jump", "Ativar/desativar pulo poderoso", function(enabled)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
