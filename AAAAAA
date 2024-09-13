@@ -4,25 +4,12 @@ local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.c
 local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
 
 -- Seções de funcionalidades
-local MainSection = MainTab:CreateSection("Main")
-
--- Aimbot
-MainSection:CreateButton("Click Me!", function()
-   print("Boo!")    
-end)
-
-MainSection:CreateLabel("Namey", "Hello!")
-
-MainSection:CreateToggle("Aimbot", function(boolean)
-   print("Aimbot:", boolean)
-end)
-
-MainSection:CreateSlider("Field Of View", 0, 150, 50, false, function(value)
-   print("Field of View: " .. value)
-end)
+local EspSection = MainTab:CreateSection("ESP")
+local FlySection = MainTab:CreateSection("Fly")
+local MiscSection = MainTab:CreateSection("Misc")
 
 -- ESP
-MainSection:CreateToggle("ESP", function(enabled)
+EspSection:CreateToggle("ESP", function(enabled)
     if enabled then
         -- Add ESP functionality
         local function addESP(part)
@@ -55,7 +42,7 @@ MainSection:CreateToggle("ESP", function(enabled)
 end)
 
 -- FLY
-MainSection:CreateToggle("Fly", function(enabled)
+FlySection:CreateToggle("Fly", function(enabled)
     if enabled then
         -- Add Fly functionality
         local player = game.Players.LocalPlayer
@@ -88,10 +75,10 @@ MainSection:CreateToggle("Fly", function(enabled)
     end
 end)
 
--- SPEED HACK
+-- Miscellaneous
 local speedValue = 16  -- Default speed value
 
-MainSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
+MiscSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
     speedValue = value
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
@@ -100,8 +87,7 @@ MainSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
     print("Speed:", speedValue)
 end)
 
--- POWERJUMP
-MainSection:CreateToggle("Power Jump", function(enabled)
+MiscSection:CreateToggle("Power Jump", function(enabled)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
