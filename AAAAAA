@@ -1,76 +1,24 @@
--- Criação do Menu GUI
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-local UserInputService = game:GetService("UserInputService")
+-- Script para ativar/desativar o ESP
 
--- Cria a GUI no PlayerGui
-local screenGui = Instance.new("ScreenGui")
-screenGui.Name = "MenuGUI"
-screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
+-- Referências para GUI e Botão
+local screenGui = script.Parent.Parent
+local frame = script.Parent
+local toggleButton = frame:FindFirstChild("TextButton")
 
-local menuFrame = Instance.new("Frame")
-menuFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
-menuFrame.Position = UDim2.new(0.7, 0, 0.25, 0)
-menuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-menuFrame.Visible = false
-menuFrame.Parent = screenGui
+-- A variável para armazenar o estado do ESP
+local espEnabled = false
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0.1, 0)
-title.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
-title.Text = "Menu Hacks"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.Parent = menuFrame
-
--- Função para criar botões
-local function createButton(name, position, callback)
-    local button = Instance.new("TextButton")
-    button.Size = UDim2.new(1, 0, 0.1, 0)
-    button.Position = position
-    button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
-    button.Text = name
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.Parent = menuFrame
-
-    button.MouseButton1Click:Connect(callback)
-end
-
--- Funções de funcionalidades (exemplos básicos)
-local function toggleFly()
-    print("Fly toggled")
-    -- Adicione a lógica para a funcionalidade Fly
-end
-
-local function toggleAimbot()
-    print("Aimbot toggled")
-    -- Adicione a lógica para a funcionalidade Aimbot
-end
-
+-- Função para alternar o ESP
 local function toggleESP()
-    print("ESP toggled")
-    -- Adicione a lógica para a funcionalidade ESP
-end
-
-local function toggleSpeedhack()
-    print("Speedhack toggled")
-    -- Adicione a lógica para a funcionalidade Speedhack
-end
-
-local function togglePowerjump()
-    print("Powerjump toggled")
-    -- Adicione a lógica para a funcionalidade Powerjump
-end
-
--- Adiciona botões ao menu
-createButton("Fly", UDim2.new(0, 0, 0.2, 0), toggleFly)
-createButton("Aimbot", UDim2.new(0, 0, 0.35, 0), toggleAimbot)
-createButton("ESP", UDim2.new(0, 0, 0.5, 0), toggleESP)
-createButton("Speedhack", UDim2.new(0, 0, 0.65, 0), toggleSpeedhack)
-createButton("Powerjump", UDim2.new(0, 0, 0.8, 0), togglePowerjump)
-
--- Alterna a visibilidade do menu com a tecla "M"
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if input.KeyCode == Enum.KeyCode.M and not gameProcessed then
-        menuFrame.Visible = not menuFrame.Visible
+    espEnabled = not espEnabled
+    if espEnabled then
+        -- Código para ativar o ESP
+        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
+    else
+        -- Código para desativar o ESP
+        -- Talvez você precise adicionar um código para remover o ESP, dependendo do script
     end
-end)
+end
+
+-- Conectar o botão ao evento de clique
+toggleButton.MouseButton1Click:Connect(toggleESP)
