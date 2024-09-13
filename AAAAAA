@@ -3,52 +3,111 @@ local screenGui = Instance.new("ScreenGui")
 screenGui.Name = "MenuGui"
 screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
 
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 300)
-frame.Position = UDim2.new(0.5, -150, 0.5, -150)
-frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
-frame.Parent = screenGui
+local menuVisible = false
 
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 50)
-title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-title.Text = "PRIME CHEAT"
-title.TextColor3 = Color3.fromRGB(255, 255, 255)
-title.TextScaled = true
-title.TextStrokeTransparency = 0.5
-title.TextSize = 24
-title.Parent = frame
+local function createMenu()
+    local frame = Instance.new("Frame")
+    frame.Size = UDim2.new(0, 300, 0, 300)
+    frame.Position = UDim2.new(0.5, -150, 0.5, -150)
+    frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+    frame.Name = "MenuFrame"
+    frame.Parent = screenGui
+    frame.Visible = menuVisible
 
-local espCheckBox = Instance.new("TextButton")
-espCheckBox.Size = UDim2.new(1, 0, 0, 50)
-espCheckBox.Position = UDim2.new(0, 0, 0, 60)
-espCheckBox.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
-espCheckBox.Text = "ESP: OFF"
-espCheckBox.TextColor3 = Color3.fromRGB(255, 255, 255)
-espCheckBox.TextScaled = true
-espCheckBox.TextStrokeTransparency = 0.5
-espCheckBox.Parent = frame
+    local title = Instance.new("TextLabel")
+    title.Size = UDim2.new(1, 0, 0, 50)
+    title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+    title.Text = "PRIME CHEAT"
+    title.TextColor3 = Color3.fromRGB(255, 255, 255)
+    title.TextScaled = true
+    title.TextStrokeTransparency = 0.5
+    title.TextSize = 24
+    title.Parent = frame
 
-local espEnabled = false
+    local espCheckBox = Instance.new("TextButton")
+    espCheckBox.Size = UDim2.new(1, 0, 0, 50)
+    espCheckBox.Position = UDim2.new(0, 0, 0, 60)
+    espCheckBox.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+    espCheckBox.Text = "ESP: OFF"
+    espCheckBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+    espCheckBox.TextScaled = true
+    espCheckBox.TextStrokeTransparency = 0.5
+    espCheckBox.Parent = frame
 
--- Função para atualizar ESP
-local function updateESP()
-    if espEnabled then
-        -- Executa o código de ESP fornecido
-        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
-    else
-        -- Desativa ESP
-        -- Precisamos ter uma maneira de remover o ESP aqui.
-        -- O código fornecido não inclui uma função de desativação explícita, 
-        -- então você pode precisar ajustar o código de ESP original para adicionar uma função de desativação.
-        -- Aqui estamos assumindo que o código de ESP irá limpar automaticamente ao ser carregado novamente.
-        -- Se não, será necessário adicionar uma lógica para remover o ESP.
+    local espEnabled = false
+
+    -- Função para atualizar ESP
+    local function updateESP()
+        if espEnabled then
+            -- Executa o código de ESP fornecido
+            loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
+        else
+            -- Desativa ESP
+            -- Necessário adicionar lógica de desativação, conforme discutido anteriormente
+        end
     end
+
+    -- Conecta a função ao botão
+    espCheckBox.MouseButton1Click:Connect(function()
+        espEnabled = not espEnabled
+        espCheckBox.Text = espEnabled and "ESP: ON" or "ESP: OFF"
+        updateESP()
+    end)
+
+    -- Função para permitir arrastar o menu
+    local dragging = false
+    local dragStart = Vector2.new()
+    local startPos = UDim2.new()
+
+    local function startDrag(input)
+        dragging = true
+        dragStart = input.Position
+        startPos = frame.Position
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+
+    local function updateDrag(input)
+        if dragging then
+            local delta = input.Position - dragStart
+            frame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+        end
+    end
+
+    title.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then
+            startDrag(input)
+        end
+    end)
+
+    title.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.MouseMovement then
+            updateDrag(input)
+        end
+    end)
 end
 
--- Conecta a função ao botão
-espCheckBox.MouseButton1Click:Connect(function()
-    espEnabled = not espEnabled
-    espCheckBox.Text = espEnabled and "ESP: ON" or "ESP: OFF"
-    updateESP()
+-- Criação do botão para abrir/fechar o menu
+local toggleButton = Instance.new("TextButton")
+toggleButton.Size = UDim2.new(0, 100, 0, 50)
+toggleButton.Position = UDim2.new(0, 10, 0.5, -25)
+toggleButton.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+toggleButton.Text = "PRIME"
+toggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+toggleButton.TextScaled = true
+toggleButton.TextStrokeTransparency = 0.5
+toggleButton.Parent = screenGui
+
+toggleButton.MouseButton1Click:Connect(function()
+    menuVisible = not menuVisible
+    local menuFrame = screenGui:FindFirstChild("MenuFrame")
+    if menuFrame then
+        menuFrame.Visible = menuVisible
+    else
+        createMenu()
+    end
+    toggleButton.Text = menuVisible and "CLOSE" or "PRIME"
 end)
