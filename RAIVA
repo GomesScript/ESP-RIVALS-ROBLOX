@@ -1,0 +1,24 @@
+-- Script para ativar/desativar o ESP
+
+-- Referências para GUI e Botão
+local screenGui = script.Parent.Parent
+local frame = script.Parent
+local toggleButton = frame:FindFirstChild("TextButton")
+
+-- A variável para armazenar o estado do ESP
+local espEnabled = false
+
+-- Função para alternar o ESP
+local function toggleESP()
+    espEnabled = not espEnabled
+    if espEnabled then
+        -- Código para ativar o ESP
+        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
+    else
+        -- Código para desativar o ESP
+        -- Talvez você precise adicionar um código para remover o ESP, dependendo do script
+    end
+end
+
+-- Conectar o botão ao evento de clique
+toggleButton.MouseButton1Click:Connect(toggleESP)
