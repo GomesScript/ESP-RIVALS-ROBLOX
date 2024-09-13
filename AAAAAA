@@ -10,7 +10,7 @@ local EspSection = MainTab:CreateSection("ESP")
 local espEnabled = false
 local espBoxes = {}
 
--- Função para criar caixas ESP
+-- Função para criar uma caixa ESP ao redor de um personagem
 local function createESPBox(player)
     local character = player.Character
     if not character then return end
@@ -41,7 +41,7 @@ local function removeESPBoxes()
     espBoxes = {}
 end
 
--- Função para atualizar caixas ESP
+-- Função para atualizar as caixas ESP
 local function updateESP()
     if espEnabled then
         -- Remover caixas existentes
@@ -60,11 +60,76 @@ local function updateESP()
 end
 
 -- Configuração da caixa de seleção para o ESP
-EspSection:CreateToggle("ESP", "info", function(state)
+EspSection:CreateToggle("ESP", "Ativar/desativar ESP", function(state)
     espEnabled = state
     updateESP()
 end)
 
 -- Atualizar o ESP quando novos jogadores entrarem ou saírem
-game.Players.PlayerAdded:Connect(updateESP)
-game.Players.PlayerRemoving:Connect(updateESP)
+game.Players.PlayerAdded:Connect(function(player)
+    player.CharacterAdded:Connect(function()
+        if espEnabled then
+            createESPBox(player)
+        end
+    end)
+end)
+
+game.Players.PlayerRemoving:Connect(removeESPBoxes)
+
+-- Área para MISC (Power Jump, Speed Hack, Fly)
+local MiscSection = MainTab:CreateSection("MISC")
+
+-- Fly Toggle
+MiscSection:CreateToggle("Fly", function(enabled)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
+    if enabled then
+        -- Add Fly functionality
+        local bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
+        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
+        bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
+        
+        local bodyGyro = Instance.new("BodyGyro", humanoidRootPart)
+        bodyGyro.CFrame = humanoidRootPart.CFrame
+        bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
+        
+        game:GetService("RunService").RenderStepped:Connect(function()
+            if bodyVelocity and bodyGyro then
+                local direction = (game.Players.LocalPlayer:GetMouse().Hit.p - humanoidRootPart.Position).unit
+                bodyVelocity.Velocity = direction * 50
+                bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + direction)
+            end
+        end)
+    else
+        -- Remove Fly functionality
+        for _, v in pairs(humanoidRootPart:GetChildren()) do
+            if v:IsA("BodyVelocity") or v:IsA("BodyGyro") then
+                v:Destroy()
+            end
+        end
+    end
+end)
+
+-- Speed Hack Slider
+MiscSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    humanoid.WalkSpeed = value
+    print("Speed:", value)
+end)
+
+-- Power Jump Toggle
+MiscSection:CreateToggle("Power Jump", function(enabled)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:WaitForChild("Humanoid")
+    
+    if enabled then
+        humanoid.JumpPower = 100  -- Set desired jump power here
+    else
+        humanoid.JumpPower = 50  -- Default jump power
+    end
+end)
