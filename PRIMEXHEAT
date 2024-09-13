@@ -1,0 +1,76 @@
+-- Criação do menu
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MenuGui"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 300)
+frame.Position = UDim2.new(0.5, -150, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.Parent = screenGui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+title.Text = "PRIME CHEAT"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.TextStrokeTransparency = 0.5
+title.TextSize = 24
+title.Parent = frame
+
+local espCheckBox = Instance.new("TextButton")
+espCheckBox.Size = UDim2.new(1, 0, 0, 50)
+espCheckBox.Position = UDim2.new(0, 0, 0, 60)
+espCheckBox.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+espCheckBox.Text = "ESP: OFF"
+espCheckBox.TextColor3 = Color3.fromRGB(255, 255, 255)
+espCheckBox.TextScaled = true
+espCheckBox.TextStrokeTransparency = 0.5
+espCheckBox.Parent = frame
+
+local espEnabled = false
+
+-- Função para atualizar ESP
+local function updateESP()
+    if espEnabled then
+        -- Ativa ESP
+        for _,player in pairs(game.Players:GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("Head") then
+                local existingESP = player.Character.Head:FindFirstChild("ESP")
+                if not existingESP then
+                    local esp = Instance.new("BillboardGui")
+                    esp.Name = "ESP"
+                    esp.Size = UDim2.new(0, 200, 0, 50)
+                    esp.Adornee = player.Character.Head
+                    esp.Parent = player.Character.Head
+                    
+                    local textLabel = Instance.new("TextLabel")
+                    textLabel.Size = UDim2.new(1, 0, 1, 0)
+                    textLabel.BackgroundTransparency = 1
+                    textLabel.Text = player.Name
+                    textLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+                    textLabel.TextScaled = true
+                    textLabel.Parent = esp
+                end
+            end
+        end
+    else
+        -- Desativa ESP
+        for _,player in pairs(game.Players:GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("Head") then
+                local esp = player.Character.Head:FindFirstChild("ESP")
+                if esp then
+                    esp:Destroy()
+                end
+            end
+        end
+    end
+end
+
+-- Conecta a função ao botão
+espCheckBox.MouseButton1Click:Connect(function()
+    espEnabled = not espEnabled
+    espCheckBox.Text = espEnabled and "ESP: ON" or "ESP: OFF"
+    updateESP()
+end)
