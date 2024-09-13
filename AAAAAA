@@ -1,9 +1,3 @@
--- Baixar o script ESP
-local function loadESP()
-    local response = game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346")
-    return loadstring(response)()
-end
-
 local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
 
 -- Criação do menu principal com título
@@ -13,18 +7,32 @@ local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
 local EspSection = MainTab:CreateSection("ESP")
 
 -- Variáveis para controle do ESP
-local espModule = loadESP()
+local espModule
 local espEnabled = false
 
-EspSection:CreateToggle("ESP", "info", function(state)
-    if state and not espEnabled then
-        -- Ativar o ESP
-        espModule.Start()
+-- Função para iniciar o ESP
+local function startESP()
+    if not espModule then
+        local response = game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346")
+        espModule = loadstring(response)()
+        espModule.Start() -- Supondo que o módulo ESP tenha um método Start
         espEnabled = true
-    elseif not state and espEnabled then
-        -- Desativar o ESP
-        espModule.Stop()  -- Assumindo que o módulo ESP tenha um método Stop para desativar
+    end
+end
+
+-- Função para parar o ESP
+local function stopESP()
+    if espModule and espEnabled then
+        espModule.Stop() -- Supondo que o módulo ESP tenha um método Stop
         espEnabled = false
+    end
+end
+
+EspSection:CreateToggle("ESP", "info", function(state)
+    if state then
+        startESP()
+    else
+        stopESP()
     end
 end)
 
