@@ -34,49 +34,15 @@ local espEnabled = false
 -- Função para atualizar ESP
 local function updateESP()
     if espEnabled then
-        -- Ativa ESP
-        for _,player in pairs(game.Players:GetPlayers()) do
-            if player.Character and player.Character:FindFirstChild("Head") then
-                local existingESP = player.Character.Head:FindFirstChild("ESP")
-                if not existingESP then
-                    -- Cria uma caixa ao redor do personagem
-                    local esp = Instance.new("BillboardGui")
-                    esp.Name = "ESP"
-                    esp.Size = UDim2.new(0, 200, 0, 100)
-                    esp.Adornee = player.Character.Head
-                    esp.StudsOffset = Vector3.new(0, 3, 0) -- Ajusta a posição da caixa
-                    esp.Parent = player.Character.Head
-                    
-                    -- Caixa branca ao redor do jogador
-                    local box = Instance.new("Frame")
-                    box.Size = UDim2.new(1, 0, 0.5, 0)
-                    box.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-                    box.BorderSizePixel = 2
-                    box.Parent = esp
-                    
-                    -- Texto do nome do jogador
-                    local textLabel = Instance.new("TextLabel")
-                    textLabel.Size = UDim2.new(1, 0, 0.5, 0)
-                    textLabel.Position = UDim2.new(0, 0, 0.5, 0)
-                    textLabel.BackgroundTransparency = 1
-                    textLabel.Text = player.Name
-                    textLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
-                    textLabel.TextScaled = true
-                    textLabel.TextSize = 14
-                    textLabel.Parent = esp
-                end
-            end
-        end
+        -- Executa o código de ESP fornecido
+        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
     else
         -- Desativa ESP
-        for _,player in pairs(game.Players:GetPlayers()) do
-            if player.Character and player.Character:FindFirstChild("Head") then
-                local esp = player.Character.Head:FindFirstChild("ESP")
-                if esp then
-                    esp:Destroy()
-                end
-            end
-        end
+        -- Precisamos ter uma maneira de remover o ESP aqui.
+        -- O código fornecido não inclui uma função de desativação explícita, 
+        -- então você pode precisar ajustar o código de ESP original para adicionar uma função de desativação.
+        -- Aqui estamos assumindo que o código de ESP irá limpar automaticamente ao ser carregado novamente.
+        -- Se não, será necessário adicionar uma lógica para remover o ESP.
     end
 end
 
