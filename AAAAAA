@@ -1,3 +1,4 @@
+-- Carregando a biblioteca CoastingLibrary
 local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
 
 -- Criação do menu principal com título
@@ -20,7 +21,7 @@ local function CreateESP()
 
         local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
         local vector, onScreen = Camera:WorldToViewportPoint(humanoidRootPart.Position)
-        
+
         local espInstance = character:FindFirstChild("ESPLabel")
         if not espInstance then
             espInstance = Instance.new("TextLabel")
@@ -46,19 +47,21 @@ local function CreateESP()
 
     local function OnPlayerAdded(player)
         player.CharacterAdded:Connect(function(character)
-            UpdateESP(player)
+            -- Atualiza ESP quando o personagem é adicionado
             RunService.RenderStepped:Connect(function()
                 UpdateESP(player)
             end)
         end)
     end
 
+    -- Atualiza ESP para todos os jogadores existentes
     for _, player in ipairs(Players:GetPlayers()) do
         if player ~= Players.LocalPlayer then
             OnPlayerAdded(player)
         end
     end
 
+    -- Conecta a função OnPlayerAdded para novos jogadores
     Players.PlayerAdded:Connect(OnPlayerAdded)
 end
 
