@@ -14,6 +14,10 @@ local espEnabled = false
 local function initializeESP()
     local response = game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346")
     espModule = loadstring(response)()
+end
+
+-- Função para iniciar o ESP
+local function startESP()
     if espModule and espModule.Start then
         espModule.Start()  -- Começa o ESP
     end
@@ -26,10 +30,14 @@ local function stopESP()
     end
 end
 
+-- Inicialize o ESP (mas não execute ainda)
+initializeESP()
+
+-- Configuração da caixa de seleção para o ESP
 EspSection:CreateToggle("ESP", "info", function(state)
     if state and not espEnabled then
         -- Ativar o ESP
-        initializeESP()
+        startESP()
         espEnabled = true
     elseif not state and espEnabled then
         -- Desativar o ESP
