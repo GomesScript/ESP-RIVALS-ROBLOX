@@ -1,0 +1,89 @@
+-- LocalScript para criar ESP em caixa e controlar o menu
+
+local Players = game:GetService("Players")
+local player = Players.LocalPlayer
+
+-- Cria a interface do usuário
+local ScreenGui = Instance.new("ScreenGui")
+ScreenGui.Parent = player:WaitForChild("PlayerGui")
+
+-- Cria o frame do menu
+local Frame = Instance.new("Frame")
+Frame.Size = UDim2.new(0, 200, 0, 100)
+Frame.Position = UDim2.new(0.5, -100, 0.5, -50)
+Frame.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Frame.Visible = false
+Frame.Parent = ScreenGui
+
+-- Cria o botão para ativar/desativar o ESP
+local ToggleButton = Instance.new("TextButton")
+ToggleButton.Size = UDim2.new(1, 0, 0.5, 0)
+ToggleButton.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+ToggleButton.Text = "Toggle ESP"
+ToggleButton.Parent = Frame
+
+-- Cria o botão para abrir/fechar o menu
+local MenuButton = Instance.new("TextButton")
+MenuButton.Size = UDim2.new(0, 100, 0, 50)
+MenuButton.Position = UDim2.new(0.5, -50, 0.1, 0)
+MenuButton.BackgroundColor3 = Color3.fromRGB(0, 0, 255)
+MenuButton.Text = "Menu"
+MenuButton.Parent = ScreenGui
+
+local ESPEnabled = false
+
+-- Função para criar a caixa de ESP
+local function createESP(character)
+    local espPart = Instance.new("BoxHandleAdornment")
+    espPart.Name = "ESPBox"
+    espPart.Adornee = character
+    espPart.Size = character.HumanoidRootPart.Size
+    espPart.Color3 = Color3.fromRGB(255, 0, 0) -- Cor da caixa
+    espPart.StudsOffset = Vector3.new(0, 0, 0)
+    espPart.AlwaysOnTop = true
+    espPart.ZIndex = 2
+    espPart.Parent = character
+end
+
+-- Função para remover a caixa de ESP
+local function removeESP(character)
+    local espPart = character:FindFirstChild("ESPBox")
+    if espPart then
+        espPart:Destroy()
+    end
+end
+
+-- Função para ativar/desativar o ESP
+local function toggleESP()
+    local character = player.Character
+    if not character then return end
+    if ESPEnabled then
+        removeESP(character)
+    else
+        createESP(character)
+    end
+    ESPEnabled = not ESPEnabled
+end
+
+-- Função para abrir/fechar o menu
+local function toggleMenu()
+    Frame.Visible = not Frame.Visible
+end
+
+-- Conectar eventos aos botões
+ToggleButton.MouseButton1Click:Connect(toggleESP)
+MenuButton.MouseButton1Click:Connect(toggleMenu)
+
+-- Verifica se o jogador já possui um personagem
+if player.Character then
+    if ESPEnabled then
+        createESP(player.Character)
+    end
+end
+
+-- Espera pelo personagem do jogador se ainda não estiver carregado
+player.CharacterAdded:Connect(function(character)
+    if ESPEnabled then
+        createESP(character)
+    end
+end)
