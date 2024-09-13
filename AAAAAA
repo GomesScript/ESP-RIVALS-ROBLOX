@@ -8,6 +8,7 @@ local EspSection = MainTab:CreateSection("ESP")
 
 -- Variável para armazenar o código do ESP
 local espScript
+local espActive = false
 
 EspSection:CreateToggle("ESP", "info", function(state)
     if state then
@@ -19,12 +20,16 @@ EspSection:CreateToggle("ESP", "info", function(state)
         -- Executar o código do ESP, se disponível
         if espScript then
             espScript()
+            espActive = true
         end
     else
         -- Desativar o ESP, se o script externo suporta essa ação
-        -- Aqui é um exemplo genérico; substitua conforme a lógica do seu script ESP externo
-        print("Desativando ESP, se o script externo suporta essa ação.")
-        -- Se o script externo tem uma função para desativar o ESP, você deve chamá-la aqui.
+        if espActive and espScript then
+            -- Aqui você deve adicionar a lógica específica para desativar o ESP
+            -- Se o script de ESP não tem uma função de desligamento, você pode precisar de outro método
+            print("Desativando ESP.")
+            espActive = false
+        end
     end
 end)
 
@@ -49,7 +54,9 @@ MiscSection:CreateToggle("Fly", function(enabled)
         
         game:GetService("RunService").RenderStepped:Connect(function()
             if bodyVelocity and bodyGyro then
-                bodyVelocity.Velocity = (game.Players.LocalPlayer:GetMouse().Hit.p - humanoidRootPart.Position).unit * 50
+                local direction = (game.Players.LocalPlayer:GetMouse().Hit.p - humanoidRootPart.Position).unit
+                bodyVelocity.Velocity = direction * 50
+                bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + direction)
             end
         end)
     else
