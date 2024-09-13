@@ -10,29 +10,31 @@ local EspSection = MainTab:CreateSection("ESP")
 local espModule
 local espEnabled = false
 
--- Função para iniciar o ESP
-local function startESP()
-    if not espModule then
-        local response = game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346")
-        espModule = loadstring(response)()
-        espModule.Start() -- Supondo que o módulo ESP tenha um método Start
-        espEnabled = true
+-- Função para inicializar o ESP
+local function initializeESP()
+    local response = game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346")
+    espModule = loadstring(response)()
+    if espModule and espModule.Start then
+        espModule.Start()  -- Começa o ESP
     end
 end
 
 -- Função para parar o ESP
 local function stopESP()
-    if espModule and espEnabled then
-        espModule.Stop() -- Supondo que o módulo ESP tenha um método Stop
-        espEnabled = false
+    if espModule and espModule.Stop then
+        espModule.Stop()  -- Para o ESP
     end
 end
 
 EspSection:CreateToggle("ESP", "info", function(state)
-    if state then
-        startESP()
-    else
+    if state and not espEnabled then
+        -- Ativar o ESP
+        initializeESP()
+        espEnabled = true
+    elseif not state and espEnabled then
+        -- Desativar o ESP
         stopESP()
+        espEnabled = false
     end
 end)
 
