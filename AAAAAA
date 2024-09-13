@@ -3,13 +3,10 @@ local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.c
 -- Criação do menu principal com título
 local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
 
--- Seção principal
-local MainSection = MainTab:CreateSection("Main")
-
 -- Área para ESP
-local EspArea = MainTab:CreateSection("ESP")
+local EspSection = MainTab:CreateSection("ESP")
 
-EspArea:CreateToggle("ESP", function(enabled)
+EspSection:CreateToggle("ESP", function(enabled)
     if enabled then
         -- Add ESP functionality
         local function addESP(part)
@@ -42,9 +39,9 @@ EspArea:CreateToggle("ESP", function(enabled)
 end)
 
 -- Área para Fly
-local FlyArea = MainTab:CreateSection("Fly")
+local FlySection = MainTab:CreateSection("Fly")
 
-FlyArea:CreateToggle("Fly", function(enabled)
+FlySection:CreateToggle("Fly", function(enabled)
     if enabled then
         -- Add Fly functionality
         local player = game.Players.LocalPlayer
@@ -78,23 +75,20 @@ FlyArea:CreateToggle("Fly", function(enabled)
 end)
 
 -- Área para Speed Hack
-local SpeedArea = MainTab:CreateSection("Speed Hack")
+local SpeedSection = MainTab:CreateSection("Speed Hack")
 
-local speedValue = 16  -- Default speed value
-
-SpeedArea:CreateSlider("Speed", 0, 100, 16, false, function(value)
-    speedValue = value
+SpeedSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
-    humanoid.WalkSpeed = speedValue
-    print("Speed:", speedValue)
+    humanoid.WalkSpeed = value
+    print("Speed:", value)
 end)
 
 -- Área para Power Jump
-local PowerJumpArea = MainTab:CreateSection("Power Jump")
+local PowerJumpSection = MainTab:CreateSection("Power Jump")
 
-PowerJumpArea:CreateToggle("Power Jump", function(enabled)
+PowerJumpSection:CreateToggle("Power Jump", function(enabled)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
