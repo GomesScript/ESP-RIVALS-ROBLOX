@@ -1,145 +1,71 @@
--- Carregar a biblioteca CoastingLibrary
-local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
+-- Certifique-se de ter a biblioteca RoStrap no seu projeto
+local RoStrap = require(game.ReplicatedStorage:WaitForChild("RoStrap"))
+local Players = game:GetService("Players")
+local UserInputService = game:GetService("UserInputService")
+local LocalPlayer = Players.LocalPlayer
 
--- Criação do menu principal com título
-local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
+-- Criação do Menu GUI
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MenuGUI"
+screenGui.Parent = LocalPlayer:WaitForChild("PlayerGui")
 
--- Área para ESP
-local EspSection = MainTab:CreateSection("ESP")
+local menuFrame = Instance.new("Frame")
+menuFrame.Size = UDim2.new(0.3, 0, 0.5, 0)
+menuFrame.Position = UDim2.new(0.7, 0, 0.25, 0)
+menuFrame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+menuFrame.Parent = screenGui
 
--- Função para criar ESP
-local function CreateESP()
-    local Players = game:GetService("Players")
-    local RunService = game:GetService("RunService")
-    local Camera = workspace.CurrentCamera
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0.1, 0)
+title.BackgroundColor3 = Color3.fromRGB(100, 100, 100)
+title.Text = "Menu Hacks"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.Parent = menuFrame
 
-    local function UpdateESP(player)
-        local character = player.Character
-        if not character or not character:FindFirstChild("HumanoidRootPart") then
-            return
-        end
-
-        local humanoidRootPart = character:FindFirstChild("HumanoidRootPart")
-        local vector, onScreen = Camera:WorldToViewportPoint(humanoidRootPart.Position)
-
-        local espInstance = character:FindFirstChild("ESPLabel")
-        if not espInstance then
-            espInstance = Instance.new("TextLabel")
-            espInstance.Name = "ESPLabel"
-            espInstance.Parent = character
-            espInstance.BackgroundTransparency = 1
-            espInstance.BorderSizePixel = 0
-            espInstance.TextColor3 = Color3.fromRGB(255, 80, 10)
-            espInstance.TextSize = 14
-            espInstance.TextStrokeTransparency = 0
-            espInstance.TextTransparency = 0.7
-            espInstance.Font = Enum.Font.SourceSans
-        end
-
-        if onScreen then
-            espInstance.Position = UDim2.new(0, vector.X, 0, vector.Y - 50)
-            espInstance.Text = player.Name
-            espInstance.Visible = true
-        else
-            espInstance.Visible = false
-        end
-    end
-
-    local function OnPlayerAdded(player)
-        player.CharacterAdded:Connect(function(character)
-            -- Atualiza ESP quando o personagem é adicionado
-            RunService.RenderStepped:Connect(function()
-                UpdateESP(player)
-            end)
-        end)
-    end
-
-    -- Atualiza ESP para todos os jogadores existentes
-    for _, player in ipairs(Players:GetPlayers()) do
-        if player ~= Players.LocalPlayer then
-            OnPlayerAdded(player)
-        end
-    end
-
-    -- Conecta a função OnPlayerAdded para novos jogadores
-    Players.PlayerAdded:Connect(OnPlayerAdded)
-end
-
--- Função para remover ESP
-local function RemoveESP()
-    for _, player in ipairs(game.Players:GetPlayers()) do
-        local espInstance = player.Character and player.Character:FindFirstChild("ESPLabel")
-        if espInstance then
-            espInstance:Destroy()
-        end
-    end
-end
-
--- Configuração da caixa de seleção para o ESP
-EspSection:CreateToggle("ESP", "Ativar/desativar ESP", function(state)
-    if state then
-        CreateESP()
-    else
-        RemoveESP()
-    end
-end)
-
--- Área para MISC (Power Jump, Speed Hack, Fly)
-local MiscSection = MainTab:CreateSection("MISC")
-
--- Fly Toggle
-local flyEnabled = false
-MiscSection:CreateToggle("Fly", "Ativar/desativar voo", function(enabled)
-    flyEnabled = enabled
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-
-    if flyEnabled then
-        -- Adicionar BodyVelocity e BodyGyro para voar
-        local bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
-        bodyVelocity.Velocity = Vector3.new(0, 0, 0)
-        bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
-
-        local bodyGyro = Instance.new("BodyGyro", humanoidRootPart)
-        bodyGyro.CFrame = humanoidRootPart.CFrame
-        bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
-
-        game:GetService("RunService").Stepped:Connect(function()
-            if flyEnabled then
-                local direction = (game.Players.LocalPlayer:GetMouse().Hit.p - humanoidRootPart.Position).unit
-                bodyVelocity.Velocity = direction * 50 -- Ajuste a velocidade do voo aqui
-                bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + direction)
-            end
-        end)
-    else
-        -- Remove BodyVelocity e BodyGyro quando o voo é desativado
-        for _, v in pairs(humanoidRootPart:GetChildren()) do
-            if v:IsA("BodyVelocity") or v:IsA("BodyGyro") then
-                v:Destroy()
-            end
-        end
-    end
-end)
-
--- Speed Hack Slider
-MiscSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
-    humanoid.WalkSpeed = value
-    print("Speed:", value)
-end)
-
--- Power Jump Toggle
-MiscSection:CreateToggle("Power Jump", "Ativar/desativar pulo poderoso", function(enabled)
-    local player = game.Players.LocalPlayer
-    local character = player.Character or player.CharacterAdded:Wait()
-    local humanoid = character:WaitForChild("Humanoid")
+-- Adicionar botões para cada funcionalidade
+local function createButton(name, position, callback)
+    local button = Instance.new("TextButton")
+    button.Size = UDim2.new(1, 0, 0.1, 0)
+    button.Position = position
+    button.BackgroundColor3 = Color3.fromRGB(70, 70, 70)
+    button.Text = name
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.Parent = menuFrame
     
-    if enabled then
-        humanoid.JumpPower = 100  -- Ajuste o poder do salto aqui
-    else
-        humanoid.JumpPower = 50  -- Valor padrão do poder do salto
+    button.MouseButton1Click:Connect(callback)
+end
+
+-- Funções de funcionalidades
+local function toggleFly()
+    -- Implementar a funcionalidade Fly aqui
+end
+
+local function toggleAimbot()
+    -- Implementar a funcionalidade Aimbot aqui
+end
+
+local function toggleESP()
+    -- Implementar a funcionalidade ESP aqui
+end
+
+local function toggleSpeedhack()
+    -- Implementar a funcionalidade Speedhack aqui
+end
+
+local function togglePowerjump()
+    -- Implementar a funcionalidade Powerjump aqui
+end
+
+-- Adicionar botões ao menu
+createButton("Fly", UDim2.new(0, 0, 0.2, 0), toggleFly)
+createButton("Aimbot", UDim2.new(0, 0, 0.35, 0), toggleAimbot)
+createButton("ESP", UDim2.new(0, 0, 0.5, 0), toggleESP)
+createButton("Speedhack", UDim2.new(0, 0, 0.65, 0), toggleSpeedhack)
+createButton("Powerjump", UDim2.new(0, 0, 0.8, 0), togglePowerjump)
+
+-- Toggle Menu Visibility
+UserInputService.InputBegan:Connect(function(input, gameProcessed)
+    if input.KeyCode == Enum.KeyCode.M and not gameProcessed then
+        menuFrame.Visible = not menuFrame.Visible
     end
 end)
