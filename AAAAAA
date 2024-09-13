@@ -4,42 +4,25 @@ local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.c
 local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
 
 -- Seções de funcionalidades
-local AimbotSection = MainTab:CreateSection("Aimbot")
-local ConfigSection = MainTab:CreateSection("Config")
+local MainSection = MainTab:CreateSection("Main")
 
 -- Aimbot
-AimbotSection:CreateButton("Click Me!", function()
+MainSection:CreateButton("Click Me!", function()
    print("Boo!")    
 end)
 
-AimbotSection:CreateLabel("Namey", "Hello!")
+MainSection:CreateLabel("Namey", "Hello!")
 
-AimbotSection:CreateToggle("Aimbot", function(boolean)
+MainSection:CreateToggle("Aimbot", function(boolean)
    print("Aimbot:", boolean)
 end)
 
-AimbotSection:CreateSlider("Field Of View", 0, 150, 50, false, function(value)
+MainSection:CreateSlider("Field Of View", 0, 150, 50, false, function(value)
    print("Field of View: " .. value)
 end)
 
--- Config
-ConfigSection:CreateColorPicker("Field of View Color", Color3.fromRGB(255, 255, 255), function(color)
-   print("Field Of View Color:", color)
-end)
-
-ConfigSection:CreateDropdown("Type", {"Mouse", "Character"}, 1, function(option)
-   print("Type: " .. option)
-end)
-
-ConfigSection:CreateKeybind("Aimbot Bind", Enum.KeyCode.Unknown, false, true, function(boolean)
-   print("Aimbot Active:", boolean)
-end)
-
 -- ESP
-local EspTab = CoastingLibrary:CreateTab("ESP")
-local EspSection = EspTab:CreateSection("Main")
-
-EspSection:CreateToggle("ESP", function(enabled)
+MainSection:CreateToggle("ESP", function(enabled)
     if enabled then
         -- Add ESP functionality
         local function addESP(part)
@@ -72,10 +55,7 @@ EspSection:CreateToggle("ESP", function(enabled)
 end)
 
 -- FLY
-local FlyTab = CoastingLibrary:CreateTab("Fly")
-local FlySection = FlyTab:CreateSection("Main")
-
-FlySection:CreateToggle("Fly", function(enabled)
+MainSection:CreateToggle("Fly", function(enabled)
     if enabled then
         -- Add Fly functionality
         local player = game.Players.LocalPlayer
@@ -109,26 +89,19 @@ FlySection:CreateToggle("Fly", function(enabled)
 end)
 
 -- SPEED HACK
-local SpeedTab = CoastingLibrary:CreateTab("Speed Hack")
-local SpeedSection = SpeedTab:CreateSection("Main")
+local speedValue = 16  -- Default speed value
 
-SpeedSection:CreateToggle("Speed Hack", function(enabled)
+MainSection:CreateSlider("Speed", 0, 100, 16, false, function(value)
+    speedValue = value
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
-    
-    if enabled then
-        humanoid.WalkSpeed = 50  -- Set desired speed here
-    else
-        humanoid.WalkSpeed = 16  -- Default speed
-    end
+    humanoid.WalkSpeed = speedValue
+    print("Speed:", speedValue)
 end)
 
 -- POWERJUMP
-local JumpTab = CoastingLibrary:CreateTab("Power Jump")
-local JumpSection = JumpTab:CreateSection("Main")
-
-JumpSection:CreateToggle("Power Jump", function(enabled)
+MainSection:CreateToggle("Power Jump", function(enabled)
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:WaitForChild("Humanoid")
