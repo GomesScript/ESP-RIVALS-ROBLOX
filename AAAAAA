@@ -6,35 +6,13 @@ local MainTab = CoastingLibrary:CreateTab("PRIME CHEAT")
 -- Área para ESP
 local EspSection = MainTab:CreateSection("ESP")
 
-EspSection:CreateToggle("ESP", function(enabled)
-    if enabled then
-        -- Add ESP functionality
-        local function addESP(part)
-            local highlight = Instance.new("Highlight", part)
-            highlight.FillColor = Color3.fromRGB(255, 0, 0)
-            highlight.FillTransparency = 0.5
-        end
-        
-        -- Apply ESP to all existing parts
-        for _, part in pairs(workspace:GetDescendants()) do
-            if part:IsA("BasePart") then
-                addESP(part)
-            end
-        end
-        
-        -- Apply ESP to new parts
-        workspace.DescendantAdded:Connect(function(part)
-            if part:IsA("BasePart") then
-                addESP(part)
-            end
-        end)
+EspSection:CreateToggle("ESP", "info", function(state)
+    if state then
+        -- Carregar o script de ESP externo
+        loadstring(game:HttpGet("https://scriptblox.com/raw/Universal-Script-3d-Box-ESP-5346"))()
     else
-        -- Remove ESP functionality
-        for _, part in pairs(workspace:GetDescendants()) do
-            if part:IsA("BasePart") and part:FindFirstChildOfClass("Highlight") then
-                part.Highlight:Destroy()
-            end
-        end
+        -- Desativar o ESP, se o script externo oferece uma forma de desativação, você pode chamá-la aqui
+        print("Desativando ESP, se o script externo suporta essa ação.")
     end
 end)
 
