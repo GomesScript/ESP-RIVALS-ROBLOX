@@ -43,11 +43,12 @@ local MiscSection = MainTab:CreateSection("MISC")
 
 -- Fly Toggle
 MiscSection:CreateToggle("Fly", function(enabled)
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
+
     if enabled then
         -- Add Fly functionality
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
         local bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
         bodyVelocity.Velocity = Vector3.new(0, 0, 0)
         bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
@@ -63,10 +64,6 @@ MiscSection:CreateToggle("Fly", function(enabled)
         end)
     else
         -- Remove Fly functionality
-        local player = game.Players.LocalPlayer
-        local character = player.Character or player.CharacterAdded:Wait()
-        local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
-        
         for _, v in pairs(humanoidRootPart:GetChildren()) do
             if v:IsA("BodyVelocity") or v:IsA("BodyGyro") then
                 v:Destroy()
