@@ -1,0 +1,74 @@
+-- Criação do menu
+local screenGui = Instance.new("ScreenGui")
+screenGui.Name = "MenuGui"
+screenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+
+local frame = Instance.new("Frame")
+frame.Size = UDim2.new(0, 300, 0, 300)
+frame.Position = UDim2.new(0.5, -150, 0.5, -150)
+frame.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+frame.Parent = screenGui
+
+local title = Instance.new("TextLabel")
+title.Size = UDim2.new(1, 0, 0, 50)
+title.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+title.Text = "PRIME CHEAT"
+title.TextColor3 = Color3.fromRGB(255, 255, 255)
+title.TextScaled = true
+title.TextStrokeTransparency = 0.5
+title.TextSize = 24
+title.Parent = frame
+
+local espToggle = Instance.new("TextButton")
+espToggle.Size = UDim2.new(1, 0, 0, 50)
+espToggle.Position = UDim2.new(0, 0, 0, 60)
+espToggle.BackgroundColor3 = Color3.fromRGB(0, 150, 0)
+espToggle.Text = "Toggle ESP"
+espToggle.TextColor3 = Color3.fromRGB(255, 255, 255)
+espToggle.TextScaled = true
+espToggle.TextStrokeTransparency = 0.5
+espToggle.Parent = frame
+
+-- Função para ativar/desativar ESP
+local function toggleESP()
+    local espEnabled = false
+    
+    -- Verifica se o ESP já está ativado
+    for _,v in pairs(workspace:GetChildren()) do
+        if v:IsA("BillboardGui") and v.Name == "ESP" then
+            espEnabled = true
+            break
+        end
+    end
+
+    if espEnabled then
+        -- Desativa ESP
+        for _,v in pairs(workspace:GetChildren()) do
+            if v:IsA("BillboardGui") and v.Name == "ESP" then
+                v:Destroy()
+            end
+        end
+    else
+        -- Ativa ESP
+        for _,player in pairs(game.Players:GetPlayers()) do
+            if player.Character and player.Character:FindFirstChild("Head") then
+                local esp = Instance.new("BillboardGui")
+                esp.Name = "ESP"
+                esp.Size = UDim2.new(0, 200, 0, 50)
+                esp.Adornee = player.Character.Head
+                esp.Parent = player.Character.Head
+                
+                local textLabel = Instance.new("TextLabel")
+                textLabel.Size = UDim2.new(1, 0, 1, 0)
+                textLabel.BackgroundTransparency = 1
+                textLabel.Text = player.Name
+                textLabel.TextColor3 = Color3.fromRGB(255, 0, 0)
+                textLabel.TextScaled = true
+                textLabel.Parent = esp
+            end
+        end
+    end
+end
+
+-- Conecta a função ao botão
+espToggle.MouseButton1Click:Connect(toggleESP)
