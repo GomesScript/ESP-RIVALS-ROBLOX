@@ -1,4 +1,4 @@
--- Carregando a biblioteca CoastingLibrary
+-- Carregar a biblioteca CoastingLibrary
 local CoastingLibrary = loadstring(game:HttpGet("https://raw.githubusercontent.com/GhostDuckyy/UI-Libraries/main/Coasting%20Ui%20Lib/source.lua"))()
 
 -- Criação do menu principal com título
@@ -88,30 +88,32 @@ end)
 local MiscSection = MainTab:CreateSection("MISC")
 
 -- Fly Toggle
+local flyEnabled = false
 MiscSection:CreateToggle("Fly", function(enabled)
+    flyEnabled = enabled
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoidRootPart = character:WaitForChild("HumanoidRootPart")
 
-    if enabled then
-        -- Add Fly functionality
+    if flyEnabled then
+        -- Adicionar BodyVelocity e BodyGyro para voar
         local bodyVelocity = Instance.new("BodyVelocity", humanoidRootPart)
         bodyVelocity.Velocity = Vector3.new(0, 0, 0)
         bodyVelocity.MaxForce = Vector3.new(4000, 4000, 4000)
-        
+
         local bodyGyro = Instance.new("BodyGyro", humanoidRootPart)
         bodyGyro.CFrame = humanoidRootPart.CFrame
         bodyGyro.MaxTorque = Vector3.new(4000, 4000, 4000)
-        
-        game:GetService("RunService").RenderStepped:Connect(function()
-            if bodyVelocity and bodyGyro then
+
+        game:GetService("RunService").Stepped:Connect(function()
+            if flyEnabled then
                 local direction = (game.Players.LocalPlayer:GetMouse().Hit.p - humanoidRootPart.Position).unit
-                bodyVelocity.Velocity = direction * 50
+                bodyVelocity.Velocity = direction * 50 -- Ajuste a velocidade do voo aqui
                 bodyGyro.CFrame = CFrame.new(humanoidRootPart.Position, humanoidRootPart.Position + direction)
             end
         end)
     else
-        -- Remove Fly functionality
+        -- Remove BodyVelocity e BodyGyro quando o voo é desativado
         for _, v in pairs(humanoidRootPart:GetChildren()) do
             if v:IsA("BodyVelocity") or v:IsA("BodyGyro") then
                 v:Destroy()
@@ -136,8 +138,8 @@ MiscSection:CreateToggle("Power Jump", function(enabled)
     local humanoid = character:WaitForChild("Humanoid")
     
     if enabled then
-        humanoid.JumpPower = 100  -- Set desired jump power here
+        humanoid.JumpPower = 100  -- Ajuste o poder do salto aqui
     else
-        humanoid.JumpPower = 50  -- Default jump power
+        humanoid.JumpPower = 50  -- Valor padrão do poder do salto
     end
 end)
